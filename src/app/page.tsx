@@ -1,6 +1,8 @@
 "use client";
 
+import { useState } from "react";
 import dynamic from "next/dynamic";
+import { FloatingText } from "@/components/animation/floating-text";
 
 const CameraVision = dynamic(
   () =>
@@ -18,6 +20,9 @@ const CameraVision = dynamic(
 );
 
 export default function HomePage() {
+  const [isTriggered, setIsTriggered] = useState(false); // Immediate - for audio
+  const [isDelayedTrigger, setIsDelayedTrigger] = useState(false); // 4s delay - for anim/text
+
   return (
     <main className="mx-auto flex min-h-screen max-w-4xl flex-col items-center justify-center px-4 py-8 sm:px-6 lg:px-8">
       {/* Title */}
@@ -30,13 +35,30 @@ export default function HomePage() {
 
       {/* Camera section — centered */}
       <div className="w-full">
-        <CameraVision />
+        <CameraVision
+          onTriggerChange={setIsTriggered}
+          onDelayedTriggerChange={setIsDelayedTrigger}
+        />
       </div>
 
       {/* Footer */}
       <footer className="mt-10 text-center text-xs text-zinc-600">
         <p>All vision processing runs locally in your browser.</p>
+        <p className="mt-1">
+          Created by{" "}
+          <a
+            href="https://github.com/Arseno25/kicau"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-violet-500 hover:text-violet-400 hover:underline transition-colors"
+          >
+            Arseno25
+          </a>
+        </p>
       </footer>
+
+      {/* Floating text overlay - outside camera, full screen (delayed 4s) */}
+      <FloatingText isVisible={isDelayedTrigger} />
     </main>
   );
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import { motion } from "motion/react";
 import { useCamera } from "@/hooks/use-camera";
 import { useHandFaceProximity } from "@/hooks/use-hand-face-proximity";
@@ -9,12 +9,19 @@ import { DebugPanel } from "@/components/camera/debug-panel";
 import { OverlayCanvas } from "@/components/camera/overlay-canvas";
 import { TriggerAnimation } from "@/components/animation/trigger-animation";
 
+export interface CameraVisionProps {
+  onTriggerChange?: (isTriggered: boolean) => void;
+  onDelayedTriggerChange?: (isTriggered: boolean) => void;
+}
+
 /**
  * Main orchestrator — camera centered, clean layout.
  */
-export function CameraVision() {
+export function CameraVision({ onTriggerChange, onDelayedTriggerChange }: CameraVisionProps = {}) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [debugMode, setDebugMode] = useState(false);
+  const [delayedTrigger, setDelayedTrigger] = useState(false);
+  const triggerTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const { videoRef, cameraStatus, startCamera, stopCamera, error } = useCamera();
 
@@ -24,6 +31,36 @@ export function CameraVision() {
     cameraStatus,
     debugMode,
   });
+
+  // Notify parent when trigger state changes (immediate - for audio)
+  useEffect(() => {
+    onTriggerChange?.(isHandNearNose);
+  }, [isHandNearNose, onTriggerChange]);
+
+  // Delayed trigger (4 seconds) - for animation & text
+  useEffect(() => {
+    if (isHandNearNose) {
+      // Start 4 second delay
+      triggerTimeoutRef.current = setTimeout(() => {
+        setDelayedTrigger(true);
+        onDelayedTriggerChange?.(true);
+      }, 4000);
+    } else {
+      // Clear timeout and reset delayed trigger
+      if (triggerTimeoutRef.current) {
+        clearTimeout(triggerTimeoutRef.current);
+        triggerTimeoutRef.current = null;
+      }
+      setDelayedTrigger(false);
+      onDelayedTriggerChange?.(false);
+    }
+
+    return () => {
+      if (triggerTimeoutRef.current) {
+        clearTimeout(triggerTimeoutRef.current);
+      }
+    };
+  }, [isHandNearNose, onDelayedTriggerChange]);
 
   return (
     <div className="flex flex-col items-center gap-5">
@@ -64,8 +101,8 @@ export function CameraVision() {
             {/* Debug canvas */}
             <OverlayCanvas ref={canvasRef} debugMode={debugMode} />
 
-            {/* GIF animation overlay */}
-            <TriggerAnimation isVisible={isHandNearNose} />
+            {/* GIF animation overlay (audio immediate, GIFs delayed 4s) */}
+            <TriggerAnimation isTriggered={isHandNearNose} isVisible={delayedTrigger} />
 
             {/* Idle placeholder */}
             {cameraStatus === "idle" && (

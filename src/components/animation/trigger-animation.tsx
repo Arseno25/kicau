@@ -1,10 +1,12 @@
 "use client";
 
 import { motion, AnimatePresence } from "motion/react";
-import { useMemo } from "react";
+import { useMemo, useRef, useEffect } from "react";
 
 interface TriggerAnimationProps {
-  /** True while hand is near nose — animation stays as long as this is true */
+  /** True while hand is near nose — audio plays immediately */
+  isTriggered: boolean;
+  /** True after 4 seconds of continuous trigger — GIFs show after delay */
   isVisible: boolean;
 }
 
@@ -19,16 +21,16 @@ interface ScatteredGif {
 
 /** Pre-generate fixed positions so they don't re-randomize every render */
 const FIXED_POSITIONS: ScatteredGif[] = [
-  { id: 0, x: 8, y: 12, size: 40, delay: 0, rotation: -12 },
-  { id: 1, x: 75, y: 8, size: 44, delay: 0.08, rotation: 15 },
-  { id: 2, x: 35, y: 5, size: 38, delay: 0.15, rotation: -8 },
-  { id: 3, x: 55, y: 70, size: 42, delay: 0.05, rotation: 10 },
-  { id: 4, x: 15, y: 65, size: 36, delay: 0.12, rotation: -18 },
-  { id: 5, x: 85, y: 55, size: 40, delay: 0.1, rotation: 8 },
-  { id: 6, x: 45, y: 80, size: 38, delay: 0.18, rotation: -5 },
-  { id: 7, x: 68, y: 35, size: 44, delay: 0.03, rotation: 12 },
-  { id: 8, x: 22, y: 40, size: 36, delay: 0.2, rotation: -15 },
-  { id: 9, x: 50, y: 30, size: 42, delay: 0.07, rotation: 6 },
+  { id: 0, x: 8, y: 12, size: 100, delay: 0, rotation: -12 },
+  { id: 1, x: 75, y: 8, size: 110, delay: 0.08, rotation: 15 },
+  { id: 2, x: 35, y: 5, size: 95, delay: 0.15, rotation: -8 },
+  { id: 3, x: 55, y: 70, size: 105, delay: 0.05, rotation: 10 },
+  { id: 4, x: 15, y: 65, size: 90, delay: 0.12, rotation: -18 },
+  { id: 5, x: 85, y: 55, size: 100, delay: 0.1, rotation: 8 },
+  { id: 6, x: 45, y: 80, size: 95, delay: 0.18, rotation: -5 },
+  { id: 7, x: 68, y: 35, size: 110, delay: 0.03, rotation: 12 },
+  { id: 8, x: 22, y: 40, size: 90, delay: 0.2, rotation: -15 },
+  { id: 9, x: 50, y: 30, size: 105, delay: 0.07, rotation: 6 },
 ];
 
 const GIF_SRC = "/animations/kicau-animation.gif";
@@ -44,9 +46,41 @@ const GIF_SRC = "/animations/kicau-animation.gif";
  * - No timers — purely state-driven
  * - CSS will-change for GPU compositing
  */
-export function TriggerAnimation({ isVisible }: TriggerAnimationProps) {
+export function TriggerAnimation({ isTriggered, isVisible }: TriggerAnimationProps) {
   // Memoize to prevent pointless re-computation
   const gifs = useMemo(() => FIXED_POSITIONS, []);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+
+  // Play sound effect immediately when triggered (not delayed)
+  useEffect(() => {
+    if (isTriggered) {
+      // Create new audio and play
+      if (!audioRef.current) {
+        const audio = new Audio("/sfx/sfx.mp3");
+        audio.volume = 1.0;
+        audio.loop = true; // Loop while triggered
+        audioRef.current = audio;
+        audio.play().catch((err) => {
+          console.log("Audio play error:", err);
+        });
+      }
+    } else {
+      // Stop and cleanup audio when not triggered
+      if (audioRef.current) {
+        audioRef.current.pause();
+        audioRef.current.currentTime = 0;
+        audioRef.current = null;
+      }
+    }
+
+    // Cleanup on unmount
+    return () => {
+      if (audioRef.current) {
+        audioRef.current.pause();
+        audioRef.current = null;
+      }
+    };
+  }, [isTriggered]);
 
   return (
     <AnimatePresence>
@@ -100,18 +134,6 @@ export function TriggerAnimation({ isVisible }: TriggerAnimationProps) {
             </motion.div>
           ))}
 
-          {/* Bottom label */}
-          <motion.div
-            className="absolute inset-x-0 bottom-[10%] flex justify-center"
-            initial={{ opacity: 0, y: 15 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 10 }}
-            transition={{ delay: 0.15, type: "spring", stiffness: 250 }}
-          >
-            <span className="rounded-full bg-black/50 px-5 py-2 text-xs font-semibold tracking-wide text-white backdrop-blur-md">
-              ✨ Nose Touch Detected!
-            </span>
-          </motion.div>
         </motion.div>
       )}
     </AnimatePresence>
