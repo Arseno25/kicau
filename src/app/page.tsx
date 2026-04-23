@@ -3,6 +3,7 @@
 import { useState } from "react";
 import dynamic from "next/dynamic";
 import { FloatingText } from "@/components/animation/floating-text";
+import { TriggerProgress } from "@/components/camera/trigger-progress";
 
 const CameraVision = dynamic(
   () =>
@@ -28,9 +29,12 @@ export default function HomePage() {
       {/* Title */}
       <header className="mb-4 text-center sm:mb-6">
         <h1 className="text-2xl font-extrabold tracking-tight sm:text-3xl md:text-4xl">
-          <span className="text-gradient">Kicau</span>{" "}
-          <span className="text-zinc-300">Mania</span>
+          <span className="text-gradient drop-shadow-lg">Kicau</span>{" "}
+          <span className="text-zinc-300 drop-shadow-md">Mania</span>
         </h1>
+        <p className="mt-2 text-xs text-zinc-500 sm:text-sm">
+          Pengalaman yang dikontrol gerakan tangan
+        </p>
       </header>
 
       {/* Camera section — centered */}
@@ -43,22 +47,28 @@ export default function HomePage() {
 
       {/* Footer */}
       <footer className="mt-6 text-center text-[10px] text-zinc-600 sm:mt-8 sm:text-xs">
-        <p>All vision processing runs locally in your browser.</p>
+        <p>Semua pemrosesan visi berjalan lokal di browser.</p>
         <p className="mt-1">
-          Created by{" "}
+          Dibuat oleh{" "}
           <a
             href="https://github.com/Arseno25/kicau"
             target="_blank"
             rel="noopener noreferrer"
-            className="text-violet-500 hover:text-violet-400 hover:underline transition-colors"
+            className="inline-flex items-center gap-1 text-violet-400 hover:text-violet-300 transition-colors"
           >
-            Arseno25
+            <span className="underline decoration-violet-500/50 underline-offset-2">Arseno25</span>
+            <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+            </svg>
           </a>
         </p>
       </footer>
 
       {/* Floating text overlay - outside camera, full screen (delayed 4s) */}
       <FloatingText isVisible={isDelayedTrigger} />
+
+      {/* Progress indicator while holding pose */}
+      <TriggerProgress isTriggered={isTriggered} delay={4000} />
     </main>
   );
 }

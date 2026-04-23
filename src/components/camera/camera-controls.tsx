@@ -35,32 +35,38 @@ export function CameraControls({
           whileTap={{ scale: 0.97 }}
           onClick={onStart}
           disabled={isRequesting}
-          className="flex items-center gap-2 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-600 px-4 py-2.5 text-xs font-semibold text-white shadow-lg shadow-emerald-500/25 transition-all hover:shadow-emerald-500/40 disabled:cursor-not-allowed disabled:opacity-50 sm:px-6 sm:py-3 sm:text-sm min-h-[44px]"
+          className="relative flex items-center gap-2 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-600 px-4 py-2.5 text-xs font-semibold text-white shadow-lg shadow-emerald-500/30 transition-all hover:shadow-emerald-500/50 disabled:cursor-not-allowed disabled:opacity-50 sm:px-6 sm:py-3 sm:text-sm min-h-[44px] overflow-hidden"
         >
-          {isRequesting ? (
-            <>
-              <LoadingSpinner />
-              <span className="hidden sm:inline">Requesting...</span>
-              <span className="sm:hidden">Requesting</span>
-            </>
-          ) : (
-            <>
-              <CameraIcon />
-              <span className="hidden sm:inline">Start Camera</span>
-              <span className="sm:hidden">Start</span>
-            </>
-          )}
+          <span className="absolute inset-0 bg-gradient-to-r from-emerald-400/20 to-teal-500/20 opacity-0 hover:opacity-100 transition-opacity" />
+          <span className="relative flex items-center gap-2">
+            {isRequesting ? (
+              <>
+                <LoadingSpinner />
+                <span className="hidden sm:inline">Meminta izin...</span>
+                <span className="sm:hidden">Meminta...</span>
+              </>
+            ) : (
+              <>
+                <CameraIcon />
+                <span className="hidden sm:inline">Mulai Kamera</span>
+                <span className="sm:hidden">Mulai</span>
+              </>
+            )}
+          </span>
         </motion.button>
       ) : (
         <motion.button
           whileHover={{ scale: 1.03 }}
           whileTap={{ scale: 0.97 }}
           onClick={onStop}
-          className="flex items-center gap-2 rounded-xl bg-gradient-to-r from-red-500 to-rose-600 px-4 py-2.5 text-xs font-semibold text-white shadow-lg shadow-red-500/25 transition-all hover:shadow-red-500/40 sm:px-6 sm:py-3 sm:text-sm min-h-[44px]"
+          className="relative flex items-center gap-2 rounded-xl bg-gradient-to-r from-red-500 to-rose-600 px-4 py-2.5 text-xs font-semibold text-white shadow-lg shadow-red-500/30 transition-all hover:shadow-red-500/50 sm:px-6 sm:py-3 sm:text-sm min-h-[44px] overflow-hidden"
         >
-          <StopIcon />
-          <span className="hidden sm:inline">Stop Camera</span>
-          <span className="sm:hidden">Stop</span>
+          <span className="absolute inset-0 bg-gradient-to-r from-red-400/20 to-rose-500/20 opacity-0 hover:opacity-100 transition-opacity" />
+          <span className="relative flex items-center gap-2">
+            <StopIcon />
+            <span className="hidden sm:inline">Berhenti</span>
+            <span className="sm:hidden">Berhenti</span>
+          </span>
         </motion.button>
       )}
 
@@ -69,23 +75,28 @@ export function CameraControls({
         whileHover={{ scale: 1.03 }}
         whileTap={{ scale: 0.97 }}
         onClick={onToggleDebug}
-        className={`flex items-center gap-1.5 rounded-xl px-3 py-2.5 text-xs font-semibold transition-all sm:gap-2 sm:px-5 sm:py-3 sm:text-sm min-h-[44px] ${
+        className={`relative flex items-center gap-1.5 rounded-xl px-3 py-2.5 text-xs font-semibold transition-all sm:gap-2 sm:px-5 sm:py-3 sm:text-sm min-h-[44px] overflow-hidden ${
           debugMode
-            ? "bg-violet-500/20 text-violet-300 ring-1 ring-violet-500/40"
+            ? "bg-violet-500/20 text-violet-300 ring-1 ring-violet-500/50 shadow-lg shadow-violet-500/10"
             : "bg-white/5 text-zinc-400 ring-1 ring-white/10 hover:bg-white/10"
         }`}
       >
-        <BugIcon />
-        <span className="hidden sm:inline">Debug {debugMode ? "ON" : "OFF"}</span>
-        <span className="sm:hidden">{debugMode ? "ON" : "OFF"}</span>
+        {debugMode && (
+          <span className="absolute inset-0 bg-violet-500/10" />
+        )}
+        <span className="relative flex items-center gap-1.5 sm:gap-2">
+          <BugIcon />
+          <span className="hidden sm:inline">Debug {debugMode ? "AKTIF" : "NONAKTIF"}</span>
+          <span className="sm:hidden">{debugMode ? "AKTIF" : "OFF"}</span>
+        </span>
       </motion.button>
 
       {/* Loading indicator */}
       {isModelLoading && (
         <div className="flex items-center gap-2 text-xs text-amber-400 sm:text-sm">
           <LoadingSpinner />
-          <span className="hidden sm:inline">Loading ML models...</span>
-          <span className="sm:hidden">Loading...</span>
+          <span className="hidden sm:inline">Memuat model AI...</span>
+          <span className="sm:hidden">Memuat...</span>
         </div>
       )}
     </div>

@@ -41,7 +41,7 @@ export function DebugPanel({ debugInfo, isVisible }: DebugPanelProps) {
       <div className="mb-2 flex items-center gap-2 sm:mb-3">
         <div className="h-1.5 w-1.5 rounded-full bg-violet-500 animate-pulse sm:h-2 sm:w-2" />
         <h3 className="text-xs font-bold tracking-wider text-zinc-300 uppercase sm:text-sm">
-          Debug Panel
+          Panel Debug
         </h3>
         <span className="ml-auto rounded-md bg-zinc-800 px-1.5 py-0.5 text-[10px] font-mono text-zinc-500 sm:px-2 sm:text-xs">
           {debugInfo.fps} FPS
@@ -49,29 +49,29 @@ export function DebugPanel({ debugInfo, isVisible }: DebugPanelProps) {
       </div>
 
       <div className="space-y-2 text-xs sm:space-y-2.5 sm:text-sm">
-        <Row label="Camera">
+        <Row label="Kamera">
           <span className={cn("font-semibold capitalize", statusColor[debugInfo.cameraStatus])}>
             {debugInfo.cameraStatus}
           </span>
         </Row>
 
-        <Row label="Face">
+        <Row label="Wajah">
           <StatusDot active={debugInfo.faceDetected} />
           <span className={debugInfo.faceDetected ? "text-emerald-400" : "text-zinc-500"}>
-            {debugInfo.faceDetected ? "Yes" : "No"}
+            {debugInfo.faceDetected ? "Ya" : "Tidak"}
           </span>
         </Row>
 
-        <Row label="Hand">
+        <Row label="Tangan">
           <StatusDot active={debugInfo.handDetected} />
           <span className={debugInfo.handDetected ? "text-emerald-400" : "text-zinc-500"}>
-            {debugInfo.handDetected ? "Yes" : "No"}
+            {debugInfo.handDetected ? "Ya" : "Tidak"}
           </span>
         </Row>
 
         <div className="border-t border-white/5 pt-1.5 sm:pt-2" />
 
-        <Row label="Norm. Dist">
+        <Row label="Jarak Norm">
           <span className="font-mono text-zinc-300">
             {debugInfo.normalizedDistance !== null
               ? debugInfo.normalizedDistance.toFixed(2)
@@ -79,7 +79,7 @@ export function DebugPanel({ debugInfo, isVisible }: DebugPanelProps) {
           </span>
         </Row>
 
-        <Row label="Raw Dist">
+        <Row label="Jarak Raw">
           <span className="font-mono text-zinc-300">
             {debugInfo.rawDistance !== null
               ? debugInfo.rawDistance.toFixed(3)
@@ -95,7 +95,7 @@ export function DebugPanel({ debugInfo, isVisible }: DebugPanelProps) {
           </span>
         </Row>
 
-        <Row label="Frames">
+        <Row label="Frame">
           <div className="flex items-center gap-1.5 sm:gap-2">
             <div className="h-1 w-12 overflow-hidden rounded-full bg-zinc-800 sm:h-1.5 sm:w-20">
               <motion.div

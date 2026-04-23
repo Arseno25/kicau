@@ -41,9 +41,15 @@ export default function RootLayout({
         />
       </head>
       <body
-        className="bg-ambient bg-grid min-h-screen antialiased font-sans"
+        className="bg-ambient bg-grid bg-noise min-h-screen antialiased font-sans"
         style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}
       >
+        {/* Animated background orbs */}
+        <div className="animated-orb orb-1" />
+        <div className="animated-orb orb-2" />
+        <div className="animated-orb orb-3" />
+        <div className="animated-orb orb-4" />
+
         {children}
       </body>
     </html>
