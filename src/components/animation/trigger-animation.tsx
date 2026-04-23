@@ -22,16 +22,16 @@ interface ScatteredGif {
 
 /** Pre-generate fixed positions so they don't re-randomize every render */
 const FIXED_POSITIONS: ScatteredGif[] = [
-  { id: 0, x: 8, y: 12, sizeMobile: 60, sizeDesktop: 100, delay: 0, rotation: -12 },
-  { id: 1, x: 75, y: 8, sizeMobile: 70, sizeDesktop: 110, delay: 0.08, rotation: 15 },
-  { id: 2, x: 35, y: 5, sizeMobile: 55, sizeDesktop: 95, delay: 0.15, rotation: -8 },
-  { id: 3, x: 55, y: 70, sizeMobile: 65, sizeDesktop: 105, delay: 0.05, rotation: 10 },
-  { id: 4, x: 15, y: 65, sizeMobile: 50, sizeDesktop: 90, delay: 0.12, rotation: -18 },
-  { id: 5, x: 85, y: 55, sizeMobile: 60, sizeDesktop: 100, delay: 0.1, rotation: 8 },
-  { id: 6, x: 45, y: 80, sizeMobile: 55, sizeDesktop: 95, delay: 0.18, rotation: -5 },
-  { id: 7, x: 68, y: 35, sizeMobile: 70, sizeDesktop: 110, delay: 0.03, rotation: 12 },
-  { id: 8, x: 22, y: 40, sizeMobile: 50, sizeDesktop: 90, delay: 0.2, rotation: -15 },
-  { id: 9, x: 50, y: 30, sizeMobile: 65, sizeDesktop: 105, delay: 0.07, rotation: 6 },
+  { id: 0, x: 20, y: 25, sizeMobile: 120, sizeDesktop: 200, delay: 0, rotation: -12 },
+  { id: 1, x: 87, y: 22, sizeMobile: 140, sizeDesktop: 240, delay: 0.08, rotation: 15 },
+  { id: 2, x: 47, y: 15, sizeMobile: 110, sizeDesktop: 180, delay: 0.15, rotation: -8 },
+  { id: 3, x: 67, y: 75, sizeMobile: 130, sizeDesktop: 220, delay: 0.05, rotation: 10 },
+  { id: 4, x: 27, y: 70, sizeMobile: 90, sizeDesktop: 160, delay: 0.12, rotation: -18 },
+  { id: 5, x: 97, y: 60, sizeMobile: 120, sizeDesktop: 200, delay: 0.1, rotation: 8 },
+  { id: 6, x: 57, y: 85, sizeMobile: 110, sizeDesktop: 190, delay: 0.18, rotation: -5 },
+  { id: 7, x: 80, y: 45, sizeMobile: 140, sizeDesktop: 240, delay: 0.03, rotation: 12 },
+  { id: 8, x: 34, y: 50, sizeMobile: 90, sizeDesktop: 170, delay: 0.2, rotation: -15 },
+  { id: 9, x: 62, y: 40, sizeMobile: 130, sizeDesktop: 220, delay: 0.07, rotation: 6 },
 ];
 
 const GIF_SRC = "/animations/kicau-animation.gif";
@@ -110,13 +110,11 @@ export function TriggerAnimation({ isTriggered, isVisible }: TriggerAnimationPro
               style={{
                 left: `${gif.x}%`,
                 top: `${gif.y}%`,
-                width: gif.sizeMobile,
-                height: gif.sizeMobile,
                 willChange: "transform, opacity",
               }}
-              initial={{ opacity: 0, scale: 0, rotate: gif.rotation - 20 }}
-              animate={{ opacity: 1, scale: 1, rotate: gif.rotation }}
-              exit={{ opacity: 0, scale: 0.5, rotate: gif.rotation + 10 }}
+              initial={{ opacity: 0, scale: 0, rotate: gif.rotation - 20, x: "-50%", y: "-50%" }}
+              animate={{ opacity: 1, scale: 1, rotate: gif.rotation, x: "-50%", y: "-50%" }}
+              exit={{ opacity: 0, scale: 0.5, rotate: gif.rotation + 10, x: "-50%", y: "-50%" }}
               transition={{
                 type: "spring",
                 stiffness: 300,
@@ -128,14 +126,15 @@ export function TriggerAnimation({ isTriggered, isVisible }: TriggerAnimationPro
               <img
                 src={GIF_SRC}
                 alt=""
-                className="h-full w-full object-contain drop-shadow-md sm:hidden"
+                className="object-contain drop-shadow-md sm:hidden"
+                style={{ width: gif.sizeMobile, height: gif.sizeMobile }}
                 draggable={false}
                 loading="eager"
               />
               <img
                 src={GIF_SRC}
                 alt=""
-                className="hidden h-full w-full object-contain drop-shadow-md sm:block"
+                className="hidden object-contain drop-shadow-md sm:block"
                 style={{ width: gif.sizeDesktop, height: gif.sizeDesktop }}
                 draggable={false}
                 loading="eager"

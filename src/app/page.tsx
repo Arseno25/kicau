@@ -47,7 +47,6 @@ export default function HomePage() {
 
       {/* Footer */}
       <footer className="mt-6 text-center text-sm font-bold sm:mt-8 sm:text-base">
-        <p className="text-white drop-shadow-lg">Semua pemrosesan visi berjalan lokal di browser.</p>
         <p className="mt-2">
           <span className="text-zinc-300">Dibuat oleh</span>{" "}
           <a
