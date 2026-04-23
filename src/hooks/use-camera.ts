@@ -64,6 +64,8 @@ export function useCamera(): UseCameraReturn {
 
         // Try multiple approaches to play the video
         const tryPlay = async () => {
+          if (!videoRef.current) return false;
+
           // Method 1: Direct play
           try {
             await videoRef.current.play();

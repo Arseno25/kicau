@@ -1,7 +1,7 @@
 "use client";
 
 import { motion, AnimatePresence } from "motion/react";
-import { useMemo, useState, useEffect } from "react";
+import { useMemo } from "react";
 
 interface FloatingTextProps {
   isVisible: boolean;
@@ -34,9 +34,6 @@ const COLORS = [
 /** Generate random positions for floating text, avoiding center camera area */
 function generateFloatingTexts(count: number): FloatingText[] {
   const texts: FloatingText[] = [];
-  const centerX = 50;
-  const centerY = 45;
-  const exclusionRadius = 30;
 
   // Define zones around the camera for text placement
   const zones = [
@@ -99,13 +96,8 @@ function generateFloatingTexts(count: number): FloatingText[] {
  * Shows colorful "KICAU MANIA" text at random positions.
  */
 export function FloatingText({ isVisible }: FloatingTextProps) {
-  const [texts, setTexts] = useState<FloatingText[]>([]);
-
-  // Regenerate positions on mount and when visibility changes
-  useEffect(() => {
-    if (isVisible) {
-      setTexts(generateFloatingTexts(20)); // 20 floating texts, spread around
-    }
+  const texts = useMemo(() => {
+    return isVisible ? generateFloatingTexts(20) : [];
   }, [isVisible]);
 
   return (

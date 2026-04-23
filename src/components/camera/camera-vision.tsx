@@ -52,8 +52,10 @@ export function CameraVision({ onTriggerChange, onDelayedTriggerChange }: Camera
         clearTimeout(triggerTimeoutRef.current);
         triggerTimeoutRef.current = null;
       }
-      setDelayedTrigger(false);
-      onDelayedTriggerChange?.(false);
+      setTimeout(() => {
+        setDelayedTrigger(false);
+        onDelayedTriggerChange?.(false);
+      }, 0);
     }
 
     return () => {

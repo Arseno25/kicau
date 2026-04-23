@@ -14,12 +14,10 @@ interface TriggerProgressProps {
  */
 export function TriggerProgress({ isTriggered, delay }: TriggerProgressProps) {
   const [progress, setProgress] = useState(0);
-  const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
     if (isTriggered) {
-      setIsVisible(true);
-      setProgress(0);
+      setTimeout(() => setProgress(0), 0);
 
       // Animate progress over delay duration
       const startTime = Date.now();
@@ -35,14 +33,13 @@ export function TriggerProgress({ isTriggered, delay }: TriggerProgressProps) {
 
       return () => clearInterval(interval);
     } else {
-      setIsVisible(false);
-      setProgress(0);
+      setTimeout(() => setProgress(0), 0);
     }
   }, [isTriggered, delay]);
 
   return (
     <AnimatePresence>
-      {isVisible && (
+      {isTriggered && (
         <motion.div
           initial={{ scale: 0, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}

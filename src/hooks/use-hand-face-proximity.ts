@@ -114,7 +114,7 @@ export function useHandFaceProximity({
   }, [cameraStatus]);
 
   // Detection loop using requestAnimationFrame
-  const detectFrame = useCallback(() => {
+  const detectFrame = useCallback(function detectFrame() {
     const video = videoRef.current;
     const canvas = canvasRef.current;
 
@@ -251,21 +251,21 @@ export function useHandFaceProximity({
 
   // Full cleanup on unmount
   useEffect(() => {
+    const sm = stateMachine.current;
+    const ns = noseSmoother.current;
+    const hs = handSmoother.current;
+    const ds = distanceSmoother.current;
+    
     return () => {
       if (animFrameRef.current) cancelAnimationFrame(animFrameRef.current);
-      stateMachine.current.destroy();
-      noseSmoother.current.reset();
-      handSmoother.current.reset();
-      distanceSmoother.current.reset();
+      sm.destroy();
+      ns.reset();
+      hs.reset();
+      ds.reset();
       destroyFaceLandmarker();
       destroyHandLandmarker();
     };
   }, []);
 
-  // Sync camera status
-  useEffect(() => {
-    setDebugInfo((prev) => ({ ...prev, cameraStatus }));
-  }, [cameraStatus]);
-
-  return { debugInfo, isModelLoading, modelError, isHandNearNose };
+  return { debugInfo: { ...debugInfo, cameraStatus }, isModelLoading, modelError, isHandNearNose };
 }
