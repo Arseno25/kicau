@@ -92,13 +92,16 @@ export function CameraVision({ onTriggerChange, onDelayedTriggerChange }: Camera
       {/* Camera viewport — centered */}
       <div className="w-full max-w-2xl px-1 sm:px-0">
         <div className="relative overflow-hidden rounded-xl border border-white/10 bg-zinc-900/70 shadow-xl glow-border sm:rounded-2xl sm:shadow-2xl">
-          <div className="relative aspect-video w-full">
+          <div className="relative aspect-video w-full h-0 pb-[56.25%]">
             {/* Video */}
             <video
               ref={videoRef}
-              className="absolute inset-0 h-full w-full object-cover"
+              className="absolute inset-0 h-full w-full object-cover bg-black"
               playsInline
               muted
+              autoPlay
+              onLoadedData={() => console.log("Video loaded")}
+              onError={(e) => console.error("Video error:", e)}
               style={{ transform: "scaleX(-1)" }}
             />
 
@@ -108,8 +111,8 @@ export function CameraVision({ onTriggerChange, onDelayedTriggerChange }: Camera
             {/* GIF animation overlay (audio immediate, GIFs delayed 4s) */}
             <TriggerAnimation isTriggered={isHandNearNose} isVisible={delayedTrigger} />
 
-            {/* Idle placeholder */}
-            {cameraStatus === "idle" && (
+            {/* Idle or Requesting placeholder */}
+            {(cameraStatus === "idle" || cameraStatus === "requesting") && (
               <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-3 bg-zinc-900/95 px-4 sm:gap-4">
                 <motion.div
                   animate={{ scale: [1, 1.05, 1] }}
@@ -121,12 +124,23 @@ export function CameraVision({ onTriggerChange, onDelayedTriggerChange }: Camera
                     <path strokeLinecap="round" strokeLinejoin="round" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
                   </svg>
                 </motion.div>
-                <p className="text-xs text-zinc-300 sm:text-sm">
-                  Klik <span className="font-semibold text-emerald-400">Mulai Kamera</span> untuk memulai
-                </p>
-                <p className="text-[10px] text-zinc-500 sm:text-xs">
-                  Deteksi gerakan tangan powered by MediaPipe
-                </p>
+                {cameraStatus === "idle" ? (
+                  <>
+                    <p className="text-xs text-zinc-300 sm:text-sm">
+                      Klik <span className="font-semibold text-emerald-400">Mulai Kamera</span> untuk memulai
+                    </p>
+                    <p className="text-[10px] text-zinc-500 sm:text-xs">
+                      Deteksi gerakan tangan powered by MediaPipe
+                    </p>
+                  </>
+                ) : (
+                  <>
+                    <div className="mt-2 h-6 w-6 animate-spin rounded-full border-2 border-cyan-500 border-t-transparent" />
+                    <p className="text-xs text-cyan-400 sm:text-sm font-semibold animate-pulse">
+                      Mohon izinkan akses kamera di browser Anda...
+                    </p>
+                  </>
+                )}
               </div>
             )}
 
