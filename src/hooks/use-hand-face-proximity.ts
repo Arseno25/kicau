@@ -29,28 +29,29 @@ interface UseHandFaceProximityOptions {
   canvasRef: React.RefObject<HTMLCanvasElement | null>;
   cameraStatus: CameraStatus;
   debugMode: boolean;
-  onTrigger: () => void;
 }
 
 interface UseHandFaceProximityReturn {
   debugInfo: DebugInfo;
   isModelLoading: boolean;
   modelError: string | null;
+  /** True while hand is near nose — drives animation visibility */
+  isHandNearNose: boolean;
 }
 
 /**
  * Orchestrates real-time face + hand detection, proximity calculation,
- * coordinate smoothing, debounced triggering, and debug rendering.
+ * coordinate smoothing, and continuous proximity state tracking.
  */
 export function useHandFaceProximity({
   videoRef,
   canvasRef,
   cameraStatus,
   debugMode,
-  onTrigger,
 }: UseHandFaceProximityOptions): UseHandFaceProximityReturn {
   const [isModelLoading, setIsModelLoading] = useState(false);
   const [modelError, setModelError] = useState<string | null>(null);
+  const [isHandNearNose, setIsHandNearNose] = useState(false);
   const [debugInfo, setDebugInfo] = useState<DebugInfo>({
     cameraStatus: "idle",
     faceDetected: false,
@@ -70,12 +71,18 @@ export function useHandFaceProximity({
   const lastFrameTime = useRef(0);
   const fpsCounter = useRef({ frames: 0, lastCheck: 0, fps: 0 });
   const modelsReady = useRef(false);
+  const debugInfoRef = useRef(debugInfo);
 
-  // Keep refs to latest values for the rAF loop (avoids stale closures)
+  // Keep ref to debugMode for rAF loop
   const debugModeRef = useRef(debugMode);
   debugModeRef.current = debugMode;
-  const onTriggerRef = useRef(onTrigger);
-  onTriggerRef.current = onTrigger;
+
+  // Wire state machine to React state
+  useEffect(() => {
+    stateMachine.current.setOnStateChange((active) => {
+      setIsHandNearNose(active);
+    });
+  }, []);
 
   // Initialize models when camera becomes active
   useEffect(() => {
@@ -103,10 +110,7 @@ export function useHandFaceProximity({
     }
 
     loadModels();
-
-    return () => {
-      cancelled = true;
-    };
+    return () => { cancelled = true; };
   }, [cameraStatus]);
 
   // Detection loop using requestAnimationFrame
@@ -129,8 +133,8 @@ export function useHandFaceProximity({
       fpsCounter.current.lastCheck = now;
     }
 
-    // Throttle to ~60fps max
-    if (now - lastFrameTime.current < 16) {
+    // Throttle to ~30fps for detection (saves CPU)
+    if (now - lastFrameTime.current < 33) {
       animFrameRef.current = requestAnimationFrame(detectFrame);
       return;
     }
@@ -147,7 +151,6 @@ export function useHandFaceProximity({
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    // Run detections
     let faceDetected = false;
     let handDetected = false;
     let smoothedNose: NormalizedPoint | null = null;
@@ -160,7 +163,6 @@ export function useHandFaceProximity({
       const faceLM = getFaceLandmarker();
       const handLM = getHandLandmarker();
 
-      // Face detection
       if (faceLM) {
         const faceResult = faceLM.detectForVideo(video, now);
         if (faceResult.faceLandmarks && faceResult.faceLandmarks.length > 0) {
@@ -174,7 +176,6 @@ export function useHandFaceProximity({
         }
       }
 
-      // Hand detection
       if (handLM) {
         const handResult = handLM.detectForVideo(video, now);
         if (handResult.landmarks && handResult.landmarks.length > 0) {
@@ -187,10 +188,10 @@ export function useHandFaceProximity({
         }
       }
     } catch {
-      // Detection error — skip this frame silently
+      // Detection error — skip frame
     }
 
-    // Compute proximity distance
+    // Compute proximity
     let isClose = false;
     if (smoothedNose && smoothedHand && faceWidth > MIN_FACE_WIDTH) {
       rawDist = euclideanDistance(smoothedNose, smoothedHand);
@@ -201,24 +202,16 @@ export function useHandFaceProximity({
       distanceSmoother.current.reset();
     }
 
-    // Update state machine
-    stateMachine.current.setOnTrigger(() => onTriggerRef.current());
+    // Update state machine (drives isHandNearNose)
     stateMachine.current.processFrame(isClose);
 
-    // Debug overlay drawing
+    // Debug drawing
     if (debugModeRef.current) {
-      drawDebugOverlay(
-        ctx,
-        canvas.width,
-        canvas.height,
-        smoothedNose,
-        smoothedHand,
-        isClose
-      );
+      drawDebugOverlay(ctx, canvas.width, canvas.height, smoothedNose, smoothedHand, isClose);
     }
 
-    // Update debug info state
-    setDebugInfo({
+    // Throttle debug info updates to ~10fps to reduce re-renders
+    const newInfo: DebugInfo = {
       cameraStatus: "active",
       faceDetected,
       handDetected,
@@ -227,30 +220,39 @@ export function useHandFaceProximity({
       triggerState: stateMachine.current.getState(),
       consecutiveFrames: stateMachine.current.getConsecutiveFrames(),
       fps: fpsCounter.current.fps,
-    });
+    };
+
+    // Only update React state if something meaningful changed
+    const prev = debugInfoRef.current;
+    if (
+      prev.faceDetected !== newInfo.faceDetected ||
+      prev.handDetected !== newInfo.handDetected ||
+      prev.triggerState !== newInfo.triggerState ||
+      prev.consecutiveFrames !== newInfo.consecutiveFrames ||
+      prev.fps !== newInfo.fps ||
+      prev.normalizedDistance !== newInfo.normalizedDistance
+    ) {
+      debugInfoRef.current = newInfo;
+      setDebugInfo(newInfo);
+    }
 
     animFrameRef.current = requestAnimationFrame(detectFrame);
   }, [videoRef, canvasRef]);
 
-  // Start/stop detection loop based on camera and model state
+  // Start/stop detection loop
   useEffect(() => {
     if (cameraStatus === "active" && modelsReady.current) {
       animFrameRef.current = requestAnimationFrame(detectFrame);
     }
-
     return () => {
-      if (animFrameRef.current) {
-        cancelAnimationFrame(animFrameRef.current);
-      }
+      if (animFrameRef.current) cancelAnimationFrame(animFrameRef.current);
     };
   }, [cameraStatus, detectFrame, isModelLoading]);
 
   // Full cleanup on unmount
   useEffect(() => {
     return () => {
-      if (animFrameRef.current) {
-        cancelAnimationFrame(animFrameRef.current);
-      }
+      if (animFrameRef.current) cancelAnimationFrame(animFrameRef.current);
       stateMachine.current.destroy();
       noseSmoother.current.reset();
       handSmoother.current.reset();
@@ -260,10 +262,10 @@ export function useHandFaceProximity({
     };
   }, []);
 
-  // Keep debug info camera status in sync
+  // Sync camera status
   useEffect(() => {
     setDebugInfo((prev) => ({ ...prev, cameraStatus }));
   }, [cameraStatus]);
 
-  return { debugInfo, isModelLoading, modelError };
+  return { debugInfo, isModelLoading, modelError, isHandNearNose };
 }
