@@ -27,7 +27,7 @@ export function CameraControls({
   const isRequesting = cameraStatus === "requesting";
 
   return (
-    <div className="flex flex-wrap items-center gap-3">
+    <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-3">
       {/* Start / Stop Camera */}
       {!isActive ? (
         <motion.button
@@ -35,17 +35,19 @@ export function CameraControls({
           whileTap={{ scale: 0.97 }}
           onClick={onStart}
           disabled={isRequesting}
-          className="flex items-center gap-2 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-600 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-emerald-500/25 transition-all hover:shadow-emerald-500/40 disabled:cursor-not-allowed disabled:opacity-50"
+          className="flex items-center gap-2 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-600 px-4 py-2.5 text-xs font-semibold text-white shadow-lg shadow-emerald-500/25 transition-all hover:shadow-emerald-500/40 disabled:cursor-not-allowed disabled:opacity-50 sm:px-6 sm:py-3 sm:text-sm min-h-[44px]"
         >
           {isRequesting ? (
             <>
               <LoadingSpinner />
-              Requesting...
+              <span className="hidden sm:inline">Requesting...</span>
+              <span className="sm:hidden">Requesting</span>
             </>
           ) : (
             <>
               <CameraIcon />
-              Start Camera
+              <span className="hidden sm:inline">Start Camera</span>
+              <span className="sm:hidden">Start</span>
             </>
           )}
         </motion.button>
@@ -54,10 +56,11 @@ export function CameraControls({
           whileHover={{ scale: 1.03 }}
           whileTap={{ scale: 0.97 }}
           onClick={onStop}
-          className="flex items-center gap-2 rounded-xl bg-gradient-to-r from-red-500 to-rose-600 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-red-500/25 transition-all hover:shadow-red-500/40"
+          className="flex items-center gap-2 rounded-xl bg-gradient-to-r from-red-500 to-rose-600 px-4 py-2.5 text-xs font-semibold text-white shadow-lg shadow-red-500/25 transition-all hover:shadow-red-500/40 sm:px-6 sm:py-3 sm:text-sm min-h-[44px]"
         >
           <StopIcon />
-          Stop Camera
+          <span className="hidden sm:inline">Stop Camera</span>
+          <span className="sm:hidden">Stop</span>
         </motion.button>
       )}
 
@@ -66,21 +69,23 @@ export function CameraControls({
         whileHover={{ scale: 1.03 }}
         whileTap={{ scale: 0.97 }}
         onClick={onToggleDebug}
-        className={`flex items-center gap-2 rounded-xl px-5 py-3 text-sm font-semibold transition-all ${
+        className={`flex items-center gap-1.5 rounded-xl px-3 py-2.5 text-xs font-semibold transition-all sm:gap-2 sm:px-5 sm:py-3 sm:text-sm min-h-[44px] ${
           debugMode
             ? "bg-violet-500/20 text-violet-300 ring-1 ring-violet-500/40"
             : "bg-white/5 text-zinc-400 ring-1 ring-white/10 hover:bg-white/10"
         }`}
       >
         <BugIcon />
-        Debug {debugMode ? "ON" : "OFF"}
+        <span className="hidden sm:inline">Debug {debugMode ? "ON" : "OFF"}</span>
+        <span className="sm:hidden">{debugMode ? "ON" : "OFF"}</span>
       </motion.button>
 
       {/* Loading indicator */}
       {isModelLoading && (
-        <div className="flex items-center gap-2 text-sm text-amber-400">
+        <div className="flex items-center gap-2 text-xs text-amber-400 sm:text-sm">
           <LoadingSpinner />
-          Loading ML models...
+          <span className="hidden sm:inline">Loading ML models...</span>
+          <span className="sm:hidden">Loading...</span>
         </div>
       )}
     </div>

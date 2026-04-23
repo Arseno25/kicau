@@ -63,7 +63,7 @@ export function CameraVision({ onTriggerChange, onDelayedTriggerChange }: Camera
   }, [isHandNearNose, onDelayedTriggerChange]);
 
   return (
-    <div className="flex flex-col items-center gap-5">
+    <div className="flex w-full flex-col items-center gap-3 sm:gap-4 md:gap-5">
       {/* Controls — centered */}
       <CameraControls
         cameraStatus={cameraStatus}
@@ -86,8 +86,8 @@ export function CameraVision({ onTriggerChange, onDelayedTriggerChange }: Camera
       )}
 
       {/* Camera viewport — centered */}
-      <div className="w-full max-w-2xl">
-        <div className="relative overflow-hidden rounded-2xl border border-white/10 bg-zinc-900/50 shadow-2xl">
+      <div className="w-full max-w-2xl px-1 sm:px-0">
+        <div className="relative overflow-hidden rounded-xl border border-white/10 bg-zinc-900/50 shadow-xl sm:rounded-2xl sm:shadow-2xl">
           <div className="relative aspect-video w-full">
             {/* Video */}
             <video
@@ -106,17 +106,17 @@ export function CameraVision({ onTriggerChange, onDelayedTriggerChange }: Camera
 
             {/* Idle placeholder */}
             {cameraStatus === "idle" && (
-              <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-4 bg-zinc-900/90">
+              <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-3 bg-zinc-900/90 px-4 sm:gap-4">
                 <motion.div
                   animate={{ scale: [1, 1.05, 1] }}
                   transition={{ duration: 3, repeat: Infinity }}
-                  className="flex h-20 w-20 items-center justify-center rounded-2xl bg-gradient-to-br from-violet-600 to-indigo-700 shadow-xl shadow-violet-600/25"
+                  className="flex h-16 w-16 items-center justify-center rounded-xl bg-gradient-to-br from-violet-600 to-indigo-700 shadow-lg shadow-violet-600/25 sm:h-20 sm:w-20 sm:rounded-2xl sm:shadow-xl"
                 >
-                  <svg className="h-10 w-10 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                  <svg className="h-8 w-8 text-white sm:h-10 sm:w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
                   </svg>
                 </motion.div>
-                <p className="text-sm text-zinc-400">
+                <p className="text-xs text-zinc-400 sm:text-sm">
                   Click <span className="font-semibold text-emerald-400">Start Camera</span> to begin
                 </p>
               </div>
@@ -124,19 +124,19 @@ export function CameraVision({ onTriggerChange, onDelayedTriggerChange }: Camera
 
             {/* Loading models */}
             {cameraStatus === "active" && isModelLoading && (
-              <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-3 bg-zinc-900/70 backdrop-blur-sm">
-                <div className="h-10 w-10 animate-spin rounded-full border-4 border-violet-500 border-t-transparent" />
-                <p className="text-sm text-zinc-300">Loading vision models...</p>
-                <p className="text-xs text-zinc-500">This may take a moment on first load</p>
+              <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-2 bg-zinc-900/70 px-4 backdrop-blur-sm sm:gap-3">
+                <div className="h-8 w-8 animate-spin rounded-full border-4 border-violet-500 border-t-transparent sm:h-10 sm:w-10" />
+                <p className="text-xs text-zinc-300 sm:text-sm">Loading vision models...</p>
+                <p className="text-[10px] text-zinc-500 sm:text-xs">This may take a moment on first load</p>
               </div>
             )}
           </div>
 
           {/* Bottom status bar */}
-          <div className="flex items-center justify-between border-t border-white/5 bg-zinc-900/60 px-4 py-2 text-xs">
-            <div className="flex items-center gap-2">
+          <div className="flex items-center justify-between border-t border-white/5 bg-zinc-900/60 px-3 py-1.5 text-[10px] sm:px-4 sm:py-2 sm:text-xs">
+            <div className="flex items-center gap-1.5 sm:gap-2">
               <div
-                className={`h-2 w-2 rounded-full ${
+                className={`h-1.5 w-1.5 rounded-full sm:h-2 sm:w-2 ${
                   cameraStatus === "active"
                     ? "bg-emerald-400 animate-pulse"
                     : cameraStatus === "error" || cameraStatus === "denied"
@@ -146,11 +146,12 @@ export function CameraVision({ onTriggerChange, onDelayedTriggerChange }: Camera
               />
               <span className="text-zinc-400 capitalize">{cameraStatus}</span>
             </div>
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2 sm:gap-3">
               {isHandNearNose && (
-                <span className="flex items-center gap-1 text-rose-400 font-semibold">
-                  <span className="h-1.5 w-1.5 rounded-full bg-rose-400 animate-pulse" />
-                  ACTIVE
+                <span className="flex items-center gap-0.5 text-rose-400 font-semibold sm:gap-1">
+                  <span className="h-1 w-1 rounded-full bg-rose-400 animate-pulse sm:h-1.5 sm:w-1.5" />
+                  <span className="hidden sm:inline">ACTIVE</span>
+                  <span className="sm:hidden">●</span>
                 </span>
               )}
               {cameraStatus === "active" && (

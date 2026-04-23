@@ -36,42 +36,42 @@ export function DebugPanel({ debugInfo, isVisible }: DebugPanelProps) {
       animate={{ opacity: 1, y: 0, scale: 1 }}
       exit={{ opacity: 0, y: 10, scale: 0.95 }}
       transition={{ type: "spring", stiffness: 300, damping: 25 }}
-      className="rounded-2xl border border-white/10 bg-zinc-900/80 p-5 shadow-2xl backdrop-blur-xl"
+      className="rounded-xl border border-white/10 bg-zinc-900/80 p-3 shadow-xl backdrop-blur-xl sm:rounded-2xl sm:p-5 sm:shadow-2xl"
     >
-      <div className="mb-3 flex items-center gap-2">
-        <div className="h-2 w-2 rounded-full bg-violet-500 animate-pulse" />
-        <h3 className="text-sm font-bold tracking-wider text-zinc-300 uppercase">
+      <div className="mb-2 flex items-center gap-2 sm:mb-3">
+        <div className="h-1.5 w-1.5 rounded-full bg-violet-500 animate-pulse sm:h-2 sm:w-2" />
+        <h3 className="text-xs font-bold tracking-wider text-zinc-300 uppercase sm:text-sm">
           Debug Panel
         </h3>
-        <span className="ml-auto rounded-md bg-zinc-800 px-2 py-0.5 text-xs font-mono text-zinc-500">
+        <span className="ml-auto rounded-md bg-zinc-800 px-1.5 py-0.5 text-[10px] font-mono text-zinc-500 sm:px-2 sm:text-xs">
           {debugInfo.fps} FPS
         </span>
       </div>
 
-      <div className="space-y-2.5 text-sm">
+      <div className="space-y-2 text-xs sm:space-y-2.5 sm:text-sm">
         <Row label="Camera">
           <span className={cn("font-semibold capitalize", statusColor[debugInfo.cameraStatus])}>
             {debugInfo.cameraStatus}
           </span>
         </Row>
 
-        <Row label="Face Detected">
+        <Row label="Face">
           <StatusDot active={debugInfo.faceDetected} />
           <span className={debugInfo.faceDetected ? "text-emerald-400" : "text-zinc-500"}>
             {debugInfo.faceDetected ? "Yes" : "No"}
           </span>
         </Row>
 
-        <Row label="Hand Detected">
+        <Row label="Hand">
           <StatusDot active={debugInfo.handDetected} />
           <span className={debugInfo.handDetected ? "text-emerald-400" : "text-zinc-500"}>
             {debugInfo.handDetected ? "Yes" : "No"}
           </span>
         </Row>
 
-        <div className="border-t border-white/5 pt-2" />
+        <div className="border-t border-white/5 pt-1.5 sm:pt-2" />
 
-        <Row label="Norm. Distance">
+        <Row label="Norm. Dist">
           <span className="font-mono text-zinc-300">
             {debugInfo.normalizedDistance !== null
               ? debugInfo.normalizedDistance.toFixed(2)
@@ -79,7 +79,7 @@ export function DebugPanel({ debugInfo, isVisible }: DebugPanelProps) {
           </span>
         </Row>
 
-        <Row label="Raw Distance">
+        <Row label="Raw Dist">
           <span className="font-mono text-zinc-300">
             {debugInfo.rawDistance !== null
               ? debugInfo.rawDistance.toFixed(3)
@@ -87,24 +87,24 @@ export function DebugPanel({ debugInfo, isVisible }: DebugPanelProps) {
           </span>
         </Row>
 
-        <div className="border-t border-white/5 pt-2" />
+        <div className="border-t border-white/5 pt-1.5 sm:pt-2" />
 
-        <Row label="Trigger State">
+        <Row label="Trigger">
           <span className={cn("font-semibold capitalize", triggerColor[debugInfo.triggerState])}>
             {debugInfo.triggerState}
           </span>
         </Row>
 
-        <Row label="Consec. Frames">
-          <div className="flex items-center gap-2">
-            <div className="h-1.5 w-20 overflow-hidden rounded-full bg-zinc-800">
+        <Row label="Frames">
+          <div className="flex items-center gap-1.5 sm:gap-2">
+            <div className="h-1 w-12 overflow-hidden rounded-full bg-zinc-800 sm:h-1.5 sm:w-20">
               <motion.div
                 className="h-full rounded-full bg-gradient-to-r from-amber-500 to-rose-500"
                 animate={{ width: `${Math.min((debugInfo.consecutiveFrames / 8) * 100, 100)}%` }}
                 transition={{ duration: 0.15 }}
               />
             </div>
-            <span className="font-mono text-xs text-zinc-400">
+            <span className="font-mono text-[10px] text-zinc-400 sm:text-xs">
               {debugInfo.consecutiveFrames}/8
             </span>
           </div>
@@ -116,9 +116,9 @@ export function DebugPanel({ debugInfo, isVisible }: DebugPanelProps) {
 
 function Row({ label, children }: { label: string; children: React.ReactNode }) {
   return (
-    <div className="flex items-center justify-between gap-4">
-      <span className="text-zinc-500">{label}</span>
-      <div className="flex items-center gap-1.5">{children}</div>
+    <div className="flex items-center justify-between gap-2 sm:gap-4">
+      <span className="text-zinc-500 text-[10px] sm:text-xs">{label}</span>
+      <div className="flex items-center gap-1 sm:gap-1.5">{children}</div>
     </div>
   );
 }
@@ -127,7 +127,7 @@ function StatusDot({ active }: { active: boolean }) {
   return (
     <div
       className={cn(
-        "h-2 w-2 rounded-full transition-colors",
+        "h-1.5 w-1.5 rounded-full transition-colors sm:h-2 sm:w-2",
         active ? "bg-emerald-400 shadow-sm shadow-emerald-400/50" : "bg-zinc-600"
       )}
     />

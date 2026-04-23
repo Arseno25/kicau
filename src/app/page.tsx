@@ -24,10 +24,10 @@ export default function HomePage() {
   const [isDelayedTrigger, setIsDelayedTrigger] = useState(false); // 4s delay - for anim/text
 
   return (
-    <main className="mx-auto flex min-h-screen max-w-4xl flex-col items-center justify-center px-4 py-8 sm:px-6 lg:px-8">
+    <main className="mx-auto flex min-h-screen w-full max-w-4xl flex-col items-center justify-center px-3 py-4 sm:px-4 sm:py-6 md:px-6 md:py-8 lg:px-8">
       {/* Title */}
-      <header className="mb-6 text-center">
-        <h1 className="text-3xl font-extrabold tracking-tight sm:text-4xl">
+      <header className="mb-4 text-center sm:mb-6">
+        <h1 className="text-2xl font-extrabold tracking-tight sm:text-3xl md:text-4xl">
           <span className="text-gradient">Kicau</span>{" "}
           <span className="text-zinc-300">Mania</span>
         </h1>
@@ -42,7 +42,7 @@ export default function HomePage() {
       </div>
 
       {/* Footer */}
-      <footer className="mt-10 text-center text-xs text-zinc-600">
+      <footer className="mt-6 text-center text-[10px] text-zinc-600 sm:mt-8 sm:text-xs">
         <p>All vision processing runs locally in your browser.</p>
         <p className="mt-1">
           Created by{" "}

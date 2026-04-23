@@ -17,7 +17,7 @@ interface FloatingText {
   color: string;
 }
 
-const TEXT_TO_DISPLAY = "KICAU MANIA";
+const TEXT_TO_DISPLAY = ["KICAU...", "KICAU MANIA"];
 
 const COLORS = [
   "#ef4444", // red-500
@@ -34,9 +34,9 @@ const COLORS = [
 /** Generate random positions for floating text, avoiding center camera area */
 function generateFloatingTexts(count: number): FloatingText[] {
   const texts: FloatingText[] = [];
-  const centerX = 50; // Center X (where camera is)
-  const centerY = 45; // Center Y (where camera is approximately)
-  const exclusionRadius = 30; // Radius to avoid around camera
+  const centerX = 50;
+  const centerY = 45;
+  const exclusionRadius = 30;
 
   // Define zones around the camera for text placement
   const zones = [
@@ -75,7 +75,7 @@ function generateFloatingTexts(count: number): FloatingText[] {
     const tooClose = texts.some(existing => {
       const dx = existing.x - x;
       const dy = existing.y - y;
-      return Math.sqrt(dx * dx + dy * dy) < 12; // Minimum 12% distance between texts
+      return Math.sqrt(dx * dx + dy * dy) < 12;
     });
 
     if (!tooClose) {
@@ -125,7 +125,7 @@ export function FloatingText({ isVisible }: FloatingTextProps) {
               style={{
                 left: `${text.x}%`,
                 top: `${text.y}%`,
-                fontSize: `${1.5 + text.scale * 0.5}rem`,
+                fontSize: `clamp(0.75rem, ${1 + text.scale * 0.3}vw, ${1.5 + text.scale * 0.5}rem)`,
                 color: text.color,
                 fontFamily: "'Plus Jakarta Sans', sans-serif",
                 willChange: "transform, opacity",

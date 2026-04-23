@@ -14,6 +14,8 @@
 
   html {
     scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+    -webkit-tap-highlight-color: transparent;
   }
 
   body {
@@ -23,6 +25,17 @@
     min-height: 100vh;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
+  }
+
+  /* Prevent bounce scroll on iOS */
+  body {
+    overscroll-behavior-y: none;
+  }
+
+  /* Better touch targets for interactive elements */
+  button, a {
+    touch-action: manipulation;
   }
 }
 
