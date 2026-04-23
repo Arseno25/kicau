@@ -75,9 +75,9 @@ export function TriggerProgress({ isTriggered, delay }: TriggerProgressProps) {
               />
               <defs>
                 <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                  <stop offset="0%" stopColor="#c084fc" />
-                  <stop offset="50%" stopColor="#818cf8" />
-                  <stop offset="100%" stopColor="#38bdf8" />
+                  <stop offset="0%" stopColor="#22d3ee" />
+                  <stop offset="50%" stopColor="#2dd4bf" />
+                  <stop offset="100%" stopColor="#14b8a6" />
                 </linearGradient>
               </defs>
             </svg>
@@ -88,7 +88,7 @@ export function TriggerProgress({ isTriggered, delay }: TriggerProgressProps) {
                 key={Math.floor(progress)}
                 initial={{ scale: 1.3, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
-                className="text-lg font-bold text-violet-300 sm:text-xl"
+                className="text-lg font-bold text-cyan-300 sm:text-xl"
               >
                 {Math.ceil((delay - (progress / 100) * delay) / 1000)}
               </motion.span>
@@ -100,7 +100,7 @@ export function TriggerProgress({ isTriggered, delay }: TriggerProgressProps) {
               <motion.div
                 animate={{ scale: [1, 1.3, 1], opacity: [0.5, 0, 0.5] }}
                 transition={{ duration: 1.5, repeat: Infinity }}
-                className="absolute inset-0 rounded-full border-2 border-violet-500/30"
+                className="absolute inset-0 rounded-full border-2 border-cyan-500/30"
               />
             )}
           </div>
@@ -109,7 +109,7 @@ export function TriggerProgress({ isTriggered, delay }: TriggerProgressProps) {
           <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            className="absolute -bottom-6 left-1/2 -translate-x-1/2 whitespace-nowrap text-[10px] text-violet-400 sm:text-xs"
+            className="absolute -bottom-6 left-1/2 -translate-x-1/2 whitespace-nowrap text-[10px] text-cyan-400 sm:text-xs"
           >
             Tahan pose...
           </motion.div>

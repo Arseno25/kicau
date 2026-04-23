@@ -26,7 +26,7 @@ export function DebugPanel({ debugInfo, isVisible }: DebugPanelProps) {
   const triggerColor = {
     idle: "text-zinc-400",
     approaching: "text-amber-400",
-    triggered: "text-rose-400",
+    triggered: "text-cyan-400",
     cooldown: "text-blue-400",
   };
 
@@ -39,7 +39,7 @@ export function DebugPanel({ debugInfo, isVisible }: DebugPanelProps) {
       className="rounded-xl border border-white/10 bg-zinc-900/80 p-3 shadow-xl backdrop-blur-xl sm:rounded-2xl sm:p-5 sm:shadow-2xl"
     >
       <div className="mb-2 flex items-center gap-2 sm:mb-3">
-        <div className="h-1.5 w-1.5 rounded-full bg-violet-500 animate-pulse sm:h-2 sm:w-2" />
+        <div className="h-1.5 w-1.5 rounded-full bg-cyan-500 animate-pulse sm:h-2 sm:w-2" />
         <h3 className="text-xs font-bold tracking-wider text-zinc-300 uppercase sm:text-sm">
           Panel Debug
         </h3>

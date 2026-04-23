@@ -91,7 +91,7 @@ export function CameraVision({ onTriggerChange, onDelayedTriggerChange }: Camera
 
       {/* Camera viewport — centered */}
       <div className="w-full max-w-2xl px-1 sm:px-0">
-        <div className="relative overflow-hidden rounded-xl border border-white/10 bg-zinc-900/60 shadow-xl glow-border sm:rounded-2xl sm:shadow-2xl">
+        <div className="relative overflow-hidden rounded-xl border border-white/10 bg-zinc-900/70 shadow-xl glow-border sm:rounded-2xl sm:shadow-2xl">
           <div className="relative aspect-video w-full">
             {/* Video */}
             <video
@@ -114,17 +114,17 @@ export function CameraVision({ onTriggerChange, onDelayedTriggerChange }: Camera
                 <motion.div
                   animate={{ scale: [1, 1.05, 1] }}
                   transition={{ duration: 3, repeat: Infinity }}
-                  className="relative flex h-16 w-16 items-center justify-center rounded-xl bg-gradient-to-br from-violet-600 to-indigo-700 shadow-lg shadow-violet-600/30 sm:h-20 sm:w-20 sm:rounded-2xl sm:shadow-xl"
+                  className="relative flex h-16 w-16 items-center justify-center rounded-xl bg-gradient-to-br from-cyan-500 to-teal-600 shadow-lg shadow-cyan-500/30 sm:h-20 sm:w-20 sm:rounded-2xl sm:shadow-xl"
                 >
-                  <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-violet-400/20 to-transparent" />
+                  <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-cyan-400/20 to-transparent" />
                   <svg className="relative h-8 w-8 text-white sm:h-10 sm:w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
                   </svg>
                 </motion.div>
-                <p className="text-xs text-zinc-400 sm:text-sm">
+                <p className="text-xs text-zinc-300 sm:text-sm">
                   Klik <span className="font-semibold text-emerald-400">Mulai Kamera</span> untuk memulai
                 </p>
-                <p className="text-[10px] text-zinc-600 sm:text-xs">
+                <p className="text-[10px] text-zinc-500 sm:text-xs">
                   Deteksi gerakan tangan powered by MediaPipe
                 </p>
               </div>
@@ -134,8 +134,8 @@ export function CameraVision({ onTriggerChange, onDelayedTriggerChange }: Camera
             {cameraStatus === "active" && isModelLoading && (
               <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-2 bg-zinc-900/80 px-4 backdrop-blur-sm sm:gap-3">
                 <div className="relative">
-                  <div className="h-8 w-8 animate-spin rounded-full border-4 border-violet-500/30 border-t-violet-500 sm:h-10 sm:w-10" />
-                  <div className="absolute inset-0 h-8 w-8 animate-ping rounded-full bg-violet-500/20 sm:h-10 sm:w-10" />
+                  <div className="h-8 w-8 animate-spin rounded-full border-4 border-cyan-500/30 border-t-cyan-500 sm:h-10 sm:w-10" />
+                  <div className="absolute inset-0 h-8 w-8 animate-ping rounded-full bg-cyan-500/20 sm:h-10 sm:w-10" />
                 </div>
                 <p className="text-xs text-zinc-300 sm:text-sm">Memuat model visi...</p>
                 <p className="text-[10px] text-zinc-500 sm:text-xs">Mungkin butuh waktu saat pertama</p>
@@ -159,8 +159,8 @@ export function CameraVision({ onTriggerChange, onDelayedTriggerChange }: Camera
             </div>
             <div className="flex items-center gap-2 sm:gap-3">
               {isHandNearNose && (
-                <span className="flex items-center gap-0.5 text-rose-400 font-semibold sm:gap-1">
-                  <span className="h-1 w-1 rounded-full bg-rose-400 animate-pulse sm:h-1.5 sm:w-1.5" />
+                <span className="flex items-center gap-0.5 text-cyan-400 font-semibold sm:gap-1">
+                  <span className="h-1 w-1 rounded-full bg-cyan-400 animate-pulse sm:h-1.5 sm:w-1.5" />
                   <span className="hidden sm:inline">AKTIF</span>
                   <span className="sm:hidden">●</span>
                 </span>
