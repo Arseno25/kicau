@@ -157,6 +157,23 @@ export function CameraVision({ onTriggerChange, onDelayedTriggerChange }: Camera
                 <p className="text-[10px] text-zinc-500 sm:text-xs">Mungkin butuh waktu saat pertama</p>
               </div>
             )}
+
+            {/* Mobile usage guide — shows when camera is active and models loaded */}
+            {cameraStatus === "active" && !isModelLoading && (
+              <motion.div 
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 1.5, duration: 0.5 }}
+                className="absolute top-4 left-0 right-0 z-20 flex justify-center sm:hidden px-4 pointer-events-none"
+              >
+                <div className="bg-black/60 backdrop-blur-md border border-white/10 rounded-xl px-4 py-2.5 text-center shadow-lg">
+                  <p className="text-xs text-zinc-200 font-medium leading-relaxed drop-shadow-sm">
+                    Mundurkan HP agar <span className="text-cyan-400">tangan & wajah</span> terlihat,<br/>
+                    lalu <span className="text-emerald-400 font-bold">dekatkan tangan ke hidung</span>
+                  </p>
+                </div>
+              </motion.div>
+            )}
           </div>
 
           {/* Bottom status bar */}

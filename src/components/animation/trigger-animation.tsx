@@ -53,46 +53,33 @@ export function TriggerAnimation({ isTriggered, isVisible }: TriggerAnimationPro
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const audioUnlockedRef = useRef(false);
 
-  // Pre-load audio on mount and unlock on first user interaction (mobile requirement)
+  // Mobile browsers require audio to be "unlocked" via user gesture.
   useEffect(() => {
-    const audio = new Audio("/sfx/sfx.mp3");
-    audio.volume = 1.0;
-    audio.loop = true;
-    audio.preload = "auto";
-    audioRef.current = audio;
-
-    // Mobile browsers require audio to be "unlocked" via user gesture.
-    // Play a silent moment then immediately pause to unlock the audio element.
     const unlockAudio = () => {
-      if (audioUnlockedRef.current) return;
-      const a = audioRef.current;
-      if (!a) return;
-
-      // Set volume to 0, play briefly, then pause and restore volume
-      const origVol = a.volume;
-      a.volume = 0;
-      a.play()
-        .then(() => {
-          a.pause();
-          a.currentTime = 0;
-          a.volume = origVol;
-          audioUnlockedRef.current = true;
-        })
-        .catch(() => {
-          // Silent fail — will retry on next interaction
-        });
+      if (audioUnlockedRef.current || !audioRef.current) return;
+      
+      const audio = audioRef.current;
+      
+      // Must be synchronous in the event handler!
+      audio.volume = 0;
+      audio.play().catch(() => {});
+      audio.pause();
+      audio.currentTime = 0;
+      audio.volume = 1;
+      
+      audioUnlockedRef.current = true;
+      
+      // Cleanup listeners once unlocked
+      document.removeEventListener("touchstart", unlockAudio);
+      document.removeEventListener("click", unlockAudio);
     };
 
-    document.addEventListener("touchstart", unlockAudio, { once: false });
-    document.addEventListener("click", unlockAudio, { once: false });
+    document.addEventListener("touchstart", unlockAudio, { once: true });
+    document.addEventListener("click", unlockAudio, { once: true });
 
     return () => {
       document.removeEventListener("touchstart", unlockAudio);
       document.removeEventListener("click", unlockAudio);
-      if (audioRef.current) {
-        audioRef.current.pause();
-        audioRef.current = null;
-      }
     };
   }, []);
 
@@ -102,77 +89,83 @@ export function TriggerAnimation({ isTriggered, isVisible }: TriggerAnimationPro
     if (!audio) return;
 
     if (isTriggered) {
+      // Ensure volume is 1 before playing
+      audio.volume = 1;
       audio.currentTime = 0;
       audio.play().catch((err) => {
-        console.log("Audio play error:", err);
+        console.log("Audio play error (likely missing user gesture):", err);
       });
     } else {
       audio.pause();
-      audio.currentTime = 0;
     }
   }, [isTriggered]);
 
   return (
-    <AnimatePresence>
-      {isVisible && (
-        <motion.div
-          className="absolute inset-0 z-30 pointer-events-none overflow-hidden"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.25 }}
-          style={{ willChange: "opacity" }}
-        >
-          {/* Subtle tinted overlay */}
+    <>
+      {/* Hidden audio element for native DOM playback (better for mobile iOS Safari) */}
+      <audio ref={audioRef} src="/sfx/sfx.mp3" preload="auto" loop className="hidden" />
+
+      <AnimatePresence>
+        {isVisible && (
           <motion.div
-            className="absolute inset-0 bg-gradient-to-br from-rose-500/8 via-transparent to-violet-500/8"
+            className="absolute inset-0 z-30 pointer-events-none overflow-hidden"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-          />
-
-          {/* Scattered GIFs */}
-          {gifs.map((gif) => (
+            transition={{ duration: 0.25 }}
+            style={{ willChange: "opacity" }}
+          >
+            {/* Subtle tinted overlay */}
             <motion.div
-              key={gif.id}
-              className="absolute"
-              style={{
-                left: `${gif.x}%`,
-                top: `${gif.y}%`,
-                willChange: "transform, opacity",
-              }}
-              initial={{ opacity: 0, scale: 0, rotate: gif.rotation - 20, x: "-50%", y: "-50%" }}
-              animate={{ opacity: 1, scale: 1, rotate: gif.rotation, x: "-50%", y: "-50%" }}
-              exit={{ opacity: 0, scale: 0.5, rotate: gif.rotation + 10, x: "-50%", y: "-50%" }}
-              transition={{
-                type: "spring",
-                stiffness: 300,
-                damping: 20,
-                delay: gif.delay,
-              }}
-            >
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={GIF_SRC}
-                alt=""
-                className="object-contain drop-shadow-md sm:hidden"
-                style={{ width: gif.sizeMobile, height: gif.sizeMobile }}
-                draggable={false}
-                loading="eager"
-              />
-              <img
-                src={GIF_SRC}
-                alt=""
-                className="hidden object-contain drop-shadow-md sm:block"
-                style={{ width: gif.sizeDesktop, height: gif.sizeDesktop }}
-                draggable={false}
-                loading="eager"
-              />
-            </motion.div>
-          ))}
+              className="absolute inset-0 bg-gradient-to-br from-rose-500/8 via-transparent to-violet-500/8"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+            />
 
-        </motion.div>
-      )}
-    </AnimatePresence>
+            {/* Scattered GIFs */}
+            {gifs.map((gif) => (
+              <motion.div
+                key={gif.id}
+                className="absolute"
+                style={{
+                  left: `${gif.x}%`,
+                  top: `${gif.y}%`,
+                  willChange: "transform, opacity",
+                }}
+                initial={{ opacity: 0, scale: 0, rotate: gif.rotation - 20, x: "-50%", y: "-50%" }}
+                animate={{ opacity: 1, scale: 1, rotate: gif.rotation, x: "-50%", y: "-50%" }}
+                exit={{ opacity: 0, scale: 0.5, rotate: gif.rotation + 10, x: "-50%", y: "-50%" }}
+                transition={{
+                  type: "spring",
+                  stiffness: 300,
+                  damping: 20,
+                  delay: gif.delay,
+                }}
+              >
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={GIF_SRC}
+                  alt=""
+                  className="object-contain drop-shadow-md sm:hidden"
+                  style={{ width: gif.sizeMobile, height: gif.sizeMobile }}
+                  draggable={false}
+                  loading="eager"
+                />
+                <img
+                  src={GIF_SRC}
+                  alt=""
+                  className="hidden object-contain drop-shadow-md sm:block"
+                  style={{ width: gif.sizeDesktop, height: gif.sizeDesktop }}
+                  draggable={false}
+                  loading="eager"
+                />
+              </motion.div>
+            ))}
+
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </>
   );
 }
