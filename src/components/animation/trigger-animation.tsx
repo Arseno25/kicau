@@ -22,16 +22,16 @@ interface ScatteredGif {
 
 /** Pre-generate fixed positions so they don't re-randomize every render */
 const FIXED_POSITIONS: ScatteredGif[] = [
-  { id: 0, x: 20, y: 25, sizeMobile: 120, sizeDesktop: 200, delay: 0, rotation: -12 },
-  { id: 1, x: 87, y: 22, sizeMobile: 140, sizeDesktop: 240, delay: 0.08, rotation: 15 },
-  { id: 2, x: 47, y: 15, sizeMobile: 110, sizeDesktop: 180, delay: 0.15, rotation: -8 },
-  { id: 3, x: 67, y: 75, sizeMobile: 130, sizeDesktop: 220, delay: 0.05, rotation: 10 },
-  { id: 4, x: 27, y: 70, sizeMobile: 90, sizeDesktop: 160, delay: 0.12, rotation: -18 },
-  { id: 5, x: 97, y: 60, sizeMobile: 120, sizeDesktop: 200, delay: 0.1, rotation: 8 },
-  { id: 6, x: 57, y: 85, sizeMobile: 110, sizeDesktop: 190, delay: 0.18, rotation: -5 },
-  { id: 7, x: 80, y: 45, sizeMobile: 140, sizeDesktop: 240, delay: 0.03, rotation: 12 },
-  { id: 8, x: 34, y: 50, sizeMobile: 90, sizeDesktop: 170, delay: 0.2, rotation: -15 },
-  { id: 9, x: 62, y: 40, sizeMobile: 130, sizeDesktop: 220, delay: 0.07, rotation: 6 },
+  { id: 0, x: 5,  y: 10, sizeMobile: 120, sizeDesktop: 200, delay: 0,    rotation: -12 },
+  { id: 1, x: 92, y: 12, sizeMobile: 140, sizeDesktop: 240, delay: 0.08, rotation: 15 },
+  { id: 2, x: 50, y: 5,  sizeMobile: 110, sizeDesktop: 180, delay: 0.15, rotation: -8 },
+  { id: 3, x: 88, y: 88, sizeMobile: 130, sizeDesktop: 220, delay: 0.05, rotation: 10 },
+  { id: 4, x: 8,  y: 85, sizeMobile: 90,  sizeDesktop: 160, delay: 0.12, rotation: -18 },
+  { id: 5, x: 95, y: 55, sizeMobile: 120, sizeDesktop: 200, delay: 0.1,  rotation: 8 },
+  { id: 6, x: 50, y: 92, sizeMobile: 110, sizeDesktop: 190, delay: 0.18, rotation: -5 },
+  { id: 7, x: 82, y: 35, sizeMobile: 140, sizeDesktop: 240, delay: 0.03, rotation: 12 },
+  { id: 8, x: 8,  y: 45, sizeMobile: 90,  sizeDesktop: 170, delay: 0.2,  rotation: -15 },
+  { id: 9, x: 68, y: 20, sizeMobile: 130, sizeDesktop: 220, delay: 0.07, rotation: 6 },
 ];
 
 const GIF_SRC = "/animations/kicau-animation.gif";
@@ -138,8 +138,8 @@ export function TriggerAnimation({ isTriggered, isVisible }: TriggerAnimationPro
                 exit={{ opacity: 0, scale: 0.5, rotate: gif.rotation + 10, x: "-50%", y: "-50%" }}
                 transition={{
                   type: "spring",
-                  stiffness: 300,
-                  damping: 20,
+                  stiffness: 450,
+                  damping: 25,
                   delay: gif.delay,
                 }}
               >
