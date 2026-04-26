@@ -158,22 +158,7 @@ export function CameraVision({ onTriggerChange, onDelayedTriggerChange }: Camera
               </div>
             )}
 
-            {/* Mobile usage guide — shows when camera is active and models loaded */}
-            {cameraStatus === "active" && !isModelLoading && (
-              <motion.div 
-                initial={{ opacity: 0, y: -10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 1.5, duration: 0.5 }}
-                className="absolute top-4 left-0 right-0 z-20 flex justify-center sm:hidden px-4 pointer-events-none"
-              >
-                <div className="bg-black/60 backdrop-blur-md border border-white/10 rounded-xl px-4 py-2.5 text-center shadow-lg">
-                  <p className="text-xs text-zinc-200 font-medium leading-relaxed drop-shadow-sm">
-                    Mundurkan HP agar <span className="text-cyan-400">tangan & wajah</span> terlihat,<br/>
-                    lalu <span className="text-emerald-400 font-bold">dekatkan tangan ke hidung</span>
-                  </p>
-                </div>
-              </motion.div>
-            )}
+
           </div>
 
           {/* Bottom status bar */}
@@ -205,6 +190,23 @@ export function CameraVision({ onTriggerChange, onDelayedTriggerChange }: Camera
           </div>
         </div>
       </div>
+
+      {/* Mobile usage guide — moved outside the camera view so it doesn't block the user */}
+      {cameraStatus === "active" && !isModelLoading && (
+        <motion.div 
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 1.5, duration: 0.5 }}
+          className="w-full max-w-3xl sm:hidden mt-3"
+        >
+          <div className="bg-black/40 backdrop-blur-md border border-white/10 rounded-xl px-4 py-3 text-center shadow-lg mx-auto w-fit">
+            <p className="text-xs text-zinc-300 font-medium leading-relaxed">
+              Mundurkan HP agar <span className="text-cyan-400">wajah & tangan</span> terlihat,<br/>
+              lalu <span className="text-emerald-400 font-bold">dekatkan tangan ke hidung</span>
+            </p>
+          </div>
+        </motion.div>
+      )}
 
       {/* Debug panel — below camera when active */}
       {debugMode && (
