@@ -39,15 +39,18 @@ export default function RootLayout({
       </head>
       <body
         className={`bg-ambient bg-grid bg-noise min-h-screen antialiased font-sans ${plusJakartaSans.variable}`}
-        style={{ fontFamily: "var(--font-plus-jakarta-sans), sans-serif" }}
+        style={{ fontFamily: "var(--font-plus-jakarta-sans), sans-serif", isolation: "isolate" }}
       >
-        {/* Animated background orbs */}
+        {/* Animated background orbs — behind content */}
         <div className="animated-orb orb-1" />
         <div className="animated-orb orb-2" />
         <div className="animated-orb orb-3" />
         <div className="animated-orb orb-4" />
 
-        {children}
+        {/* Main content — above background effects */}
+        <div className="relative" style={{ zIndex: 1 }}>
+          {children}
+        </div>
       </body>
     </html>
   );

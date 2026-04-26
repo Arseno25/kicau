@@ -51,36 +51,65 @@ export function TriggerAnimation({ isTriggered, isVisible }: TriggerAnimationPro
   // Memoize to prevent pointless re-computation
   const gifs = useMemo(() => FIXED_POSITIONS, []);
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const audioUnlockedRef = useRef(false);
 
-  // Play sound effect immediately when triggered (not delayed)
+  // Pre-load audio on mount and unlock on first user interaction (mobile requirement)
   useEffect(() => {
-    if (isTriggered) {
-      // Create new audio and play
-      if (!audioRef.current) {
-        const audio = new Audio("/sfx/sfx.mp3");
-        audio.volume = 1.0;
-        audio.loop = true; // Loop while triggered
-        audioRef.current = audio;
-        audio.play().catch((err) => {
-          console.log("Audio play error:", err);
-        });
-      }
-    } else {
-      // Stop and cleanup audio when not triggered
-      if (audioRef.current) {
-        audioRef.current.pause();
-        audioRef.current.currentTime = 0;
-        audioRef.current = null;
-      }
-    }
+    const audio = new Audio("/sfx/sfx.mp3");
+    audio.volume = 1.0;
+    audio.loop = true;
+    audio.preload = "auto";
+    audioRef.current = audio;
 
-    // Cleanup on unmount
+    // Mobile browsers require audio to be "unlocked" via user gesture.
+    // Play a silent moment then immediately pause to unlock the audio element.
+    const unlockAudio = () => {
+      if (audioUnlockedRef.current) return;
+      const a = audioRef.current;
+      if (!a) return;
+
+      // Set volume to 0, play briefly, then pause and restore volume
+      const origVol = a.volume;
+      a.volume = 0;
+      a.play()
+        .then(() => {
+          a.pause();
+          a.currentTime = 0;
+          a.volume = origVol;
+          audioUnlockedRef.current = true;
+        })
+        .catch(() => {
+          // Silent fail — will retry on next interaction
+        });
+    };
+
+    document.addEventListener("touchstart", unlockAudio, { once: false });
+    document.addEventListener("click", unlockAudio, { once: false });
+
     return () => {
+      document.removeEventListener("touchstart", unlockAudio);
+      document.removeEventListener("click", unlockAudio);
       if (audioRef.current) {
         audioRef.current.pause();
         audioRef.current = null;
       }
     };
+  }, []);
+
+  // Play/pause audio based on trigger state
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (!audio) return;
+
+    if (isTriggered) {
+      audio.currentTime = 0;
+      audio.play().catch((err) => {
+        console.log("Audio play error:", err);
+      });
+    } else {
+      audio.pause();
+      audio.currentTime = 0;
+    }
   }, [isTriggered]);
 
   return (

@@ -32,7 +32,7 @@ export default function HomePage() {
           <span className="text-gradient drop-shadow-lg">Kicau</span>{" "}
           <span className="text-zinc-200 drop-shadow-md">Mania</span>
         </h1>
-        <p className="mt-2 text-xs text-zinc-500 sm:text-sm">
+        <p className="mt-2 text-xs text-zinc-400 sm:text-sm">
           Pengalaman yang dikontrol gerakan tangan
         </p>
       </header>
@@ -48,7 +48,7 @@ export default function HomePage() {
       {/* Footer */}
       <footer className="mt-6 text-center text-sm font-bold sm:mt-8 sm:text-base">
         <p className="mt-2">
-          <span className="text-zinc-300">Dibuat oleh</span>{" "}
+          <span className="text-zinc-200">Dibuat oleh</span>{" "}
           <a
             href="https://github.com/Arseno25/kicau"
             target="_blank"
